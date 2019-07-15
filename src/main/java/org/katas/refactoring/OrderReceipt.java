@@ -17,24 +17,15 @@ public class OrderReceipt {
         StringBuilder output = new StringBuilder();
         printHeaders( output);
         printCustomerNameAddress(output);
-        double totSalesTx = 0d;
-        double tot = 0d;
         printItem(output);
-       for (LineItem lineItem : o.getLineItems()) {
-            printItem(output);
-            // calculate sales tax @ rate of 10%
-            double salesTax = lineItem.totalAmount() * .10;
-            totSalesTx += salesTax;
-
-            // calculate total amount of lineItem = price * quantity + 10 % sales tax
-            tot += lineItem.totalAmount() + salesTax;
-        }
-
+        printItem(output);
+        printTotSalesTx();
+        printTotTotalAmount();
         // prints the state tax
-        output.append("Sales Tax").append('\t').append(totSalesTx);
+        output.append("Sales Tax").append('\t').append(printTotSalesTx());
 
         // print total amount
-        output.append("Total Amount").append('\t').append(tot);
+        output.append("Total Amount").append('\t').append(printTotTotalAmount());
         return output.toString();
     }
     public void printHeaders(StringBuilder output){
@@ -54,5 +45,11 @@ public class OrderReceipt {
             output.append(lineItem.totalAmount());
             output.append('\n');
         }
+    }
+    public double printTotSalesTx(){
+       return o.getLineItems().stream().map(LineItem::totalAmount).mapToDouble(item->item* .10).reduce(0,(a,b)->a+b);
+    }
+    public double printTotTotalAmount(){
+        return o.getLineItems().stream().map(LineItem::totalAmount).mapToDouble(item->item).reduce(0,(a,b)->a+b)+printTotSalesTx();
     }
 }
