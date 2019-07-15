@@ -21,11 +21,7 @@ public class OrderReceipt {
         printItem(output);
         printTotSalesTx();
         printTotTotalAmount();
-        // prints the state tax
-        output.append("Sales Tax").append('\t').append(printTotSalesTx());
-
-        // print total amount
-        output.append("Total Amount").append('\t').append(printTotTotalAmount());
+        printStatetaxTotalacount(output);
         return output.toString();
     }
     public void printHeaders(StringBuilder output){
@@ -51,5 +47,9 @@ public class OrderReceipt {
     }
     public double printTotTotalAmount(){
         return o.getLineItems().stream().map(LineItem::totalAmount).mapToDouble(item->item).reduce(0,(a,b)->a+b)+printTotSalesTx();
+    }
+    public void printStatetaxTotalacount(StringBuilder output){
+        output.append("Sales Tax").append('\t').append(printTotSalesTx());
+        output.append("Total Amount").append('\t').append(printTotTotalAmount());
     }
 }
